@@ -110,6 +110,16 @@ if (process.env.SENTRY_DSN) {
   app.use(Sentry.Handlers.errorHandler());
 }
 
+// Global Error Handler to ensure JSON response instead of HTML
+app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
+  logger.error(err);
+  res.status(err.status || 500).json({
+    error: "Internal Server Error",
+    message: err.message || "An unexpected error occurred",
+    path: req.path
+  });
+});
+
 // Serve Frontend in Production
 if (process.env.NODE_ENV === "production") {
   app.use(express.static(path.join(__dirname, "dist")));

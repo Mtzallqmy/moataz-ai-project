@@ -1,8 +1,8 @@
-import { BaseProvider } from "./abstract.provider";
-import { GatewayRequest, GatewayResponse, TokenUsage, CostMetrics } from "./types";
+import { BaseProvider } from "./abstract.provider.js";
+import { GatewayRequest, GatewayResponse, TokenUsage, CostMetrics } from "./types.js";
 import { GoogleGenAI } from "@google/genai";
 import { Readable } from "stream";
-import { db } from "../db/engine";
+import { db } from "../db/engine.js";
 
 export class GeminiProvider extends BaseProvider {
   id = "prov-google";

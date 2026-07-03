@@ -1,4 +1,4 @@
-import { BaseProvider, RequestPayload, ResponseChunk, ProviderHealth, AIModel, GenerationConfig, SafetySetting } from "./abstract.provider";
+import { BaseProvider, RequestPayload, ResponseChunk, ProviderHealth, AIModel, GenerationConfig, SafetySetting } from "./abstract.provider.js";
 import { Readable } from "stream";
 import { PrismaClient } from "@prisma/client";
 
