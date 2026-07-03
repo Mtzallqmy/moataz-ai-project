@@ -1,0 +1,539 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DATABASE_URL_RAW")
+}
+
+enum Role {
+  ADMIN
+  MANAGER
+  USER
+}
+
+enum Plan {
+  FREE
+  PRO
+  ENTERPRISE
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  CANCELED
+  PAST_DUE
+}
+
+enum MessageRole {
+  system
+  user
+  assistant
+}
+
+enum KbStatus {
+  indexed
+  pending
+  failed
+}
+
+enum MemoryType {
+  short_term
+  long_term
+  conversation
+  project
+  knowledge
+}
+
+enum AgentStatus {
+  idle
+  running
+  completed
+  failed
+}
+
+enum SandboxLanguage {
+  javascript
+  typescript
+  python
+  bash
+  json
+  markdown
+}
+
+enum ToolCategory {
+  internal
+  mcp
+  custom
+}
+
+enum WorkflowNodeType {
+  agent_task
+  condition
+  loop
+  tool_call
+  delay
+}
+
+enum WorkflowTriggerType {
+  cron
+  event
+  webhook
+}
+
+enum WorkflowRunStatus {
+  pending
+  running
+  completed
+  failed
+}
+
+enum AutomationLogStatus {
+  success
+  failed
+}
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  password      String
+  name          String?
+  role          Role      @default(USER)
+  emailVerified DateTime?
+  mfaEnabled    Boolean   @default(false)
+  mfaSecret     String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  deletedAt     DateTime?
+
+  refreshTokens RefreshToken[]
+  preference    UserPreference?
+  subscription  Subscription?
+  projects      Project[]
+  conversations Conversation[]
+  apiKeys       ApiKey[]
+  usageLogs     UsageLog[]
+  files         File[]
+  folders       Folder[]
+  notifications Notification[]
+  auditLogs     AuditLog[]
+  templates     PromptTemplate[]
+  kbCollections KbCollection[]
+  memories      MemoryItem[]
+  agents        Agent[]
+  workflows     Workflow[]
+  agentSessions AgentSession[]
+
+  @@index([email])
+}
+
+model RefreshToken {
+  id        String   @id @default(cuid())
+  token     String   @unique
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+}
+
+model UserPreference {
+  id           String   @id @default(cuid())
+  userId       String   @unique
+  theme        String   @default("light")
+  defaultModel String   @default("gemini-1.5-flash")
+  systemPrompt String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Subscription {
+  id                 String             @id @default(cuid())
+  userId             String             @unique
+  plan               Plan               @default(FREE)
+  status             SubscriptionStatus @default(ACTIVE)
+  currentPeriodStart DateTime           @default(now())
+  currentPeriodEnd   DateTime
+  stripeCustomerId   String?
+  stripeSubId        String?
+  createdAt          DateTime           @default(now())
+  updatedAt          DateTime           @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Project {
+  id          String    @id @default(cuid())
+  name        String
+  description String?
+  userId      String
+  orgId       String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  deletedAt   DateTime?
+
+  user          User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  conversations Conversation[]
+  files         File[]
+  folders       Folder[]
+  kbCollections KbCollection[]
+  memories      MemoryItem[]
+  agentSessions AgentSession[]
+  workflows     Workflow[]
+
+  @@index([userId])
+}
+
+model Conversation {
+  id         String    @id @default(cuid())
+  title      String
+  projectId  String?
+  userId     String
+  modelId    String?
+  isArchived Boolean   @default(false)
+  metadata   Json?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  deletedAt  DateTime?
+
+  project   Project?   @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  messages  Message[]
+  usageLogs UsageLog[]
+
+  @@index([projectId])
+  @@index([userId])
+}
+
+model Message {
+  id             String   @id @default(cuid())
+  conversationId String
+  role           String // 'user', 'assistant', 'system'
+  content        String
+  tokenCount     Int      @default(0)
+  cost           Float    @default(0)
+  attachments    Json?
+  createdAt      DateTime @default(now())
+
+  conversation Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+
+  @@index([conversationId])
+}
+
+model Provider {
+  id           String   @id @default(cuid())
+  name         String   @unique
+  apiType      String
+  apiKey       String?
+  baseUrl      String?
+  isActive     Boolean  @default(true)
+  healthStatus String   @default("healthy")
+  metadata     Json?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  models Model[]
+}
+
+model Model {
+  id              String   @id @default(cuid())
+  providerId      String
+  name            String
+  apiName         String
+  contextWindow   Int
+  costPer1kInput  Float
+  costPer1kOutput Float
+  isActive        Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  provider  Provider   @relation(fields: [providerId], references: [id], onDelete: Cascade)
+  usageLogs UsageLog[]
+}
+
+model ApiKey {
+  id          String   @id @default(cuid())
+  name        String
+  keyPrefix   String
+  redactedKey String
+  userId      String
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model UsageLog {
+  id             String   @id @default(cuid())
+  userId         String
+  conversationId String?
+  modelId        String
+  inputTokens    Int
+  outputTokens   Int
+  cost           Float
+  durationMs     Int
+  createdAt      DateTime @default(now())
+
+  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  conversation Conversation? @relation(fields: [conversationId], references: [id], onDelete: SetNull)
+  model        Model         @relation(fields: [modelId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model File {
+  id        String   @id @default(cuid())
+  name      String
+  mimeType  String
+  sizeBytes Int
+  url       String
+  userId    String
+  projectId String
+  folderId  String?
+  createdAt DateTime @default(now())
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  folder  Folder? @relation(fields: [folderId], references: [id], onDelete: SetNull)
+
+  @@index([projectId])
+  @@index([userId])
+}
+
+model Folder {
+  id        String   @id @default(cuid())
+  name      String
+  userId    String
+  projectId String
+  parentId  String?
+  createdAt DateTime @default(now())
+
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  project    Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  parent     Folder?  @relation("SubFolders", fields: [parentId], references: [id], onDelete: SetNull)
+  subFolders Folder[] @relation("SubFolders")
+  files      File[]
+
+  @@index([projectId])
+  @@index([userId])
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String
+  title     String
+  content   String
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  userId    String
+  action    String
+  ipAddress String?
+  userAgent String?
+  details   String?
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model PromptTemplate {
+  id          String   @id @default(cuid())
+  name        String
+  content     String
+  description String?
+  category    String?
+  userId      String
+  isPublic    Boolean  @default(false)
+  variables   Json?
+  version     String?
+  isFavorite  Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model KbCollection {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  userId      String
+  projectId   String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user      User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  project   Project      @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  documents KbDocument[]
+
+  @@index([projectId])
+}
+
+model KbDocument {
+  id           String   @id @default(cuid())
+  collectionId String
+  name         String
+  sizeBytes    Int
+  mimeType     String
+  status       KbStatus @default(pending)
+  tags         Json?
+  chunksCount  Int      @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  collection KbCollection @relation(fields: [collectionId], references: [id], onDelete: Cascade)
+
+  @@index([collectionId])
+}
+
+model MemoryItem {
+  id        String     @id @default(cuid())
+  userId    String
+  projectId String
+  type      MemoryType
+  content   String
+  metadata  Json?
+  createdAt DateTime   @default(now())
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@index([projectId])
+  @@index([userId])
+}
+
+model Agent {
+  id           String   @id @default(cuid())
+  userId       String
+  name         String
+  role         String
+  description  String
+  systemPrompt String
+  avatar       String?
+  permissions  String[] @default([])
+  tools        String[] @default([])
+  metrics      Json     @default("{ \"tasksCompleted\": 0, \"errorRate\": 0.0, \"avgResponseMs\": 0 }")
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  user     User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  sessions AgentSession[]
+
+  @@index([userId])
+}
+
+model AgentSession {
+  id           String      @id @default(cuid())
+  projectId    String
+  agentId      String
+  userId       String
+  status       AgentStatus @default(idle)
+  messages     Json        @default("[]")
+  sharedMemory Json        @default("{}")
+  logs         Json        @default("[]")
+  metrics      Json        @default("{ \"cpuPercentage\": 0, \"memoryBytes\": 0, \"toolExecutionCount\": 0, \"totalDurationMs\": 0 }")
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+
+  project           Project            @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  agent             Agent              @relation(fields: [agentId], references: [id], onDelete: Cascade)
+  user              User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  sandboxExecutions SandboxExecution[]
+
+  @@index([projectId])
+  @@index([agentId])
+  @@index([userId])
+}
+
+model SandboxExecution {
+  id                 String          @id @default(cuid())
+  agentSessionId     String
+  language           SandboxLanguage
+  code               String
+  status             AgentStatus     @default(completed)
+  output             String?
+  error              String?
+  executionTimeMs    Int
+  memoryUsageMb      Int
+  cpuUsagePercentage Float
+  filesCreated       String[]        @default([])
+  createdAt          DateTime        @default(now())
+
+  agentSession AgentSession @relation(fields: [agentSessionId], references: [id], onDelete: Cascade)
+
+  @@index([agentSessionId])
+}
+
+model Tool {
+  id                 String       @id @default(cuid())
+  name               String       @unique
+  category           ToolCategory
+  description        String
+  parameters         Json         @default("{}")
+  requiresPermission Boolean      @default(false)
+  createdAt          DateTime     @default(now())
+  updatedAt          DateTime     @updatedAt
+}
+
+model Workflow {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  userId      String
+  projectId   String
+  nodes       Json     @default("[]")
+  triggers    Json     @default("[]")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user                  User                   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  project               Project                @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  workflowRuns          WorkflowRun[]
+  automationTriggerLogs AutomationTriggerLog[]
+
+  @@index([userId])
+  @@index([projectId])
+}
+
+model WorkflowRun {
+  id            String            @id @default(cuid())
+  workflowId    String
+  status        WorkflowRunStatus @default(pending)
+  currentNodeId String?
+  state         Json              @default("{}")
+  logs          Json              @default("[]")
+  durationMs    Int               @default(0)
+  createdAt     DateTime          @default(now())
+  completedAt   DateTime?
+
+  workflow Workflow @relation(fields: [workflowId], references: [id], onDelete: Cascade)
+
+  @@index([workflowId])
+}
+
+model AutomationTriggerLog {
+  id           String              @id @default(cuid())
+  workflowId   String
+  triggerType  WorkflowTriggerType
+  eventPayload Json?
+  status       AutomationLogStatus @default(success)
+  error        String?
+  createdAt    DateTime            @default(now())
+
+  workflow Workflow @relation(fields: [workflowId], references: [id], onDelete: Cascade)
+
+  @@index([workflowId])
+}

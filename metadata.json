@@ -1,0 +1,6 @@
+{
+  "name": "Moataz AI",
+  "description": "Production-grade AI Gateway, custom model proxy, multi-provider orchestrator, and SaaS playground with integrated usage analytics, team projects, file management, and billing configurations.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

@@ -1,0 +1,905 @@
+{
+  "users": [
+    {
+      "id": "usr-admin",
+      "email": "mohmmedabdue0@gmail.com",
+      "passwordHash": "scrypt:b4c182655ee2251b68c19052f1434955:283086c338ed12c444b31763431e94e851372ecb2495e54bd6aa0a35d9ba8f3760f28f9451f866acb796aa6240fdee6c564f74367443338bf0dcd3bfa7935a25",
+      "name": "Moataz Admin",
+      "role": "ADMIN",
+      "createdAt": "2026-07-02T17:20:18.318Z",
+      "updatedAt": "2026-07-02T18:30:52.174Z"
+    },
+    {
+      "id": "usr-demo",
+      "email": "demo@moataz.ai",
+      "passwordHash": "demo123",
+      "name": "SaaS Enterprise Demo",
+      "role": "USER",
+      "createdAt": "2026-07-02T17:20:18.318Z",
+      "updatedAt": "2026-07-02T17:20:18.318Z"
+    }
+  ],
+  "preferences": [
+    {
+      "id": "pref-admin",
+      "userId": "usr-admin",
+      "theme": "dark",
+      "defaultModel": "gemini-3.5-flash",
+      "systemPrompt": "You are Moataz AI, a super intelligent enterprise platform assistant built to empower product developments.",
+      "createdAt": "2026-07-02T17:20:18.318Z",
+      "updatedAt": "2026-07-02T17:20:18.318Z"
+    },
+    {
+      "id": "pref-demo",
+      "userId": "usr-demo",
+      "theme": "light",
+      "defaultModel": "gemini-3.5-flash",
+      "systemPrompt": "You are Moataz AI, an assistant for developers.",
+      "createdAt": "2026-07-02T17:20:18.318Z",
+      "updatedAt": "2026-07-02T17:20:18.318Z"
+    }
+  ],
+  "subscriptions": [
+    {
+      "id": "sub-admin",
+      "userId": "usr-admin",
+      "plan": "ENTERPRISE",
+      "status": "ACTIVE",
+      "currentPeriodStart": "2026-07-02T17:20:18.318Z",
+      "currentPeriodEnd": "2026-08-01T17:20:18.318Z",
+      "stripeCustomerId": "cus_admin_123",
+      "stripeSubId": "sub_stripe_admin",
+      "createdAt": "2026-07-02T17:20:18.318Z"
+    },
+    {
+      "id": "sub-demo",
+      "userId": "usr-demo",
+      "plan": "PRO",
+      "status": "ACTIVE",
+      "currentPeriodStart": "2026-07-02T17:20:18.318Z",
+      "currentPeriodEnd": "2026-07-17T17:20:18.318Z",
+      "stripeCustomerId": "cus_demo_456",
+      "stripeSubId": "sub_stripe_demo",
+      "createdAt": "2026-07-02T17:20:18.318Z"
+    }
+  ],
+  "projects": [
+    {
+      "id": "proj-admin-1",
+      "name": "Moataz AI Core Gateway",
+      "description": "Primary configuration workspace for managing AI endpoints, routing keys, and platform proxy testing.",
+      "userId": "usr-admin",
+      "orgId": null,
+      "createdAt": "2026-06-27T17:20:18.318Z",
+      "updatedAt": "2026-07-02T17:20:18.318Z"
+    },
+    {
+      "id": "proj-demo-1",
+      "name": "Internal Product Support",
+      "description": "Chat templates and model configurations for standard customer service bots.",
+      "userId": "usr-demo",
+      "orgId": null,
+      "createdAt": "2026-06-30T17:20:18.318Z",
+      "updatedAt": "2026-07-02T17:20:18.318Z"
+    }
+  ],
+  "conversations": [
+    {
+      "id": "conv-1",
+      "title": "Exploring Multi-Provider Cost Optimization",
+      "projectId": "proj-admin-1",
+      "userId": "usr-admin",
+      "modelId": "model-gemini-flash",
+      "createdAt": "2026-07-01T17:20:18.318Z",
+      "updatedAt": "2026-07-01T17:20:18.318Z"
+    }
+  ],
+  "messages": [
+    {
+      "id": "msg-1",
+      "conversationId": "conv-1",
+      "role": "user",
+      "content": "How does the Moataz AI Gateway save costs on large volume model requests?",
+      "tokenCount": 15,
+      "cost": 0.000001,
+      "createdAt": "2026-07-01T17:20:18.318Z"
+    },
+    {
+      "id": "msg-2",
+      "conversationId": "conv-1",
+      "role": "assistant",
+      "content": "Moataz AI reduces costs using semantic caching, intelligent fallback, routing requests dynamically to cheaper models (such as Gemini 3.5 Flash) when high reasoning (like Claude Sonnet) isn't triggered, and utilizing real-time token tracking to prevent over-budget calls.",
+      "tokenCount": 45,
+      "cost": 0.000013,
+      "createdAt": "2026-07-01T17:20:23.318Z"
+    }
+  ],
+  "providers": [
+    {
+      "id": "prov-google",
+      "name": "Google Gemini",
+      "apiType": "gemini",
+      "isActive": true,
+      "healthStatus": "degraded",
+      "createdAt": "2026-07-02T17:20:18.315Z",
+      "updatedAt": "2026-07-02T18:48:17.282Z"
+    },
+    {
+      "id": "prov-openai",
+      "name": "OpenAI GPT",
+      "apiType": "openai",
+      "isActive": true,
+      "healthStatus": "degraded",
+      "createdAt": "2026-07-02T17:20:18.318Z",
+      "updatedAt": "2026-07-02T18:48:17.282Z"
+    },
+    {
+      "id": "prov-anthropic",
+      "name": "Anthropic Claude",
+      "apiType": "anthropic",
+      "isActive": true,
+      "healthStatus": "degraded",
+      "createdAt": "2026-07-02T17:20:18.318Z",
+      "updatedAt": "2026-07-02T18:48:17.282Z"
+    },
+    {
+      "id": "prov-cloudflare",
+      "name": "Cloudflare Workers AI",
+      "apiType": "openai",
+      "isActive": true,
+      "healthStatus": "degraded",
+      "createdAt": "2026-07-02T17:20:18.318Z",
+      "updatedAt": "2026-07-02T18:48:17.282Z"
+    },
+    {
+      "id": "prov-openrouter",
+      "name": "OpenRouter",
+      "apiType": "openai",
+      "isActive": true,
+      "healthStatus": "degraded",
+      "createdAt": "2026-07-02T17:20:18.318Z",
+      "updatedAt": "2026-07-02T18:48:17.282Z"
+    },
+    {
+      "id": "prov-groq",
+      "name": "Groq Systems",
+      "apiType": "openai",
+      "isActive": true,
+      "healthStatus": "degraded",
+      "createdAt": "2026-07-02T17:20:18.318Z",
+      "updatedAt": "2026-07-02T18:48:17.283Z"
+    },
+    {
+      "id": "prov-deepseek",
+      "name": "DeepSeek AI",
+      "apiType": "openai",
+      "isActive": true,
+      "healthStatus": "degraded",
+      "createdAt": "2026-07-02T17:20:18.318Z",
+      "updatedAt": "2026-07-02T18:48:17.283Z"
+    },
+    {
+      "id": "prov-together",
+      "name": "Together AI",
+      "apiType": "openai",
+      "isActive": true,
+      "healthStatus": "degraded",
+      "createdAt": "2026-07-02T17:20:18.318Z",
+      "updatedAt": "2026-07-02T18:48:17.283Z"
+    },
+    {
+      "id": "prov-mistral",
+      "name": "Mistral AI",
+      "apiType": "openai",
+      "isActive": true,
+      "healthStatus": "degraded",
+      "createdAt": "2026-07-02T17:20:18.318Z",
+      "updatedAt": "2026-07-02T18:48:17.283Z"
+    },
+    {
+      "id": "prov-fireworks",
+      "name": "Fireworks AI",
+      "apiType": "openai",
+      "isActive": true,
+      "healthStatus": "degraded",
+      "createdAt": "2026-07-02T17:20:18.318Z",
+      "updatedAt": "2026-07-02T18:48:17.283Z"
+    },
+    {
+      "id": "prov-azure",
+      "name": "Azure OpenAI Service",
+      "apiType": "openai",
+      "isActive": true,
+      "healthStatus": "degraded",
+      "createdAt": "2026-07-02T17:20:18.318Z",
+      "updatedAt": "2026-07-02T18:48:17.283Z"
+    },
+    {
+      "id": "prov-bedrock",
+      "name": "AWS Bedrock",
+      "apiType": "openai",
+      "isActive": true,
+      "healthStatus": "degraded",
+      "createdAt": "2026-07-02T17:20:18.318Z",
+      "updatedAt": "2026-07-02T18:48:17.283Z"
+    },
+    {
+      "id": "prov-huggingface",
+      "name": "Hugging Face",
+      "apiType": "openai",
+      "isActive": true,
+      "healthStatus": "degraded",
+      "createdAt": "2026-07-02T17:20:18.318Z",
+      "updatedAt": "2026-07-02T18:48:17.284Z"
+    },
+    {
+      "id": "prov-cohere",
+      "name": "Cohere",
+      "apiType": "openai",
+      "isActive": true,
+      "healthStatus": "degraded",
+      "createdAt": "2026-07-02T17:20:18.318Z",
+      "updatedAt": "2026-07-02T18:48:17.284Z"
+    },
+    {
+      "id": "prov-replicate",
+      "name": "Replicate",
+      "apiType": "openai",
+      "isActive": true,
+      "healthStatus": "degraded",
+      "createdAt": "2026-07-02T17:20:18.318Z",
+      "updatedAt": "2026-07-02T18:48:17.284Z"
+    },
+    {
+      "id": "prov-nvidia",
+      "name": "NVIDIA NIM",
+      "apiType": "openai",
+      "isActive": true,
+      "healthStatus": "degraded",
+      "createdAt": "2026-07-02T17:20:18.318Z",
+      "updatedAt": "2026-07-02T18:48:17.284Z"
+    },
+    {
+      "id": "prov-perplexity",
+      "name": "Perplexity AI",
+      "apiType": "openai",
+      "isActive": true,
+      "healthStatus": "degraded",
+      "createdAt": "2026-07-02T17:20:18.318Z",
+      "updatedAt": "2026-07-02T18:48:17.284Z"
+    },
+    {
+      "id": "prov-xai",
+      "name": "xAI Grok",
+      "apiType": "openai",
+      "isActive": true,
+      "healthStatus": "degraded",
+      "createdAt": "2026-07-02T17:20:18.318Z",
+      "updatedAt": "2026-07-02T18:48:17.284Z"
+    },
+    {
+      "id": "prov-ollama",
+      "name": "Ollama API",
+      "apiType": "openai",
+      "isActive": true,
+      "healthStatus": "degraded",
+      "createdAt": "2026-07-02T17:20:18.318Z",
+      "updatedAt": "2026-07-02T18:48:17.284Z"
+    },
+    {
+      "id": "prov-lmstudio",
+      "name": "LM Studio API",
+      "apiType": "openai",
+      "isActive": true,
+      "healthStatus": "degraded",
+      "createdAt": "2026-07-02T17:20:18.318Z",
+      "updatedAt": "2026-07-02T18:48:17.285Z"
+    },
+    {
+      "id": "prov-openai-compatible",
+      "name": "OpenAI Compatible API",
+      "apiType": "openai",
+      "isActive": true,
+      "healthStatus": "degraded",
+      "createdAt": "2026-07-02T17:20:18.318Z",
+      "updatedAt": "2026-07-02T18:48:17.285Z"
+    }
+  ],
+  "models": [
+    {
+      "id": "model-gemini-flash",
+      "providerId": "prov-google",
+      "name": "Gemini 3.5 Flash",
+      "apiName": "gemini-3.5-flash",
+      "contextWindow": 1048576,
+      "costPer1kInput": 0.000075,
+      "costPer1kOutput": 0.0003,
+      "isActive": true,
+      "createdAt": "2026-07-02T17:20:18.318Z",
+      "updatedAt": "2026-07-02T17:20:18.318Z"
+    },
+    {
+      "id": "model-gemini-pro",
+      "providerId": "prov-google",
+      "name": "Gemini 3.1 Pro (Preview)",
+      "apiName": "gemini-3.1-pro-preview",
+      "contextWindow": 2097152,
+      "costPer1kInput": 0.00125,
+      "costPer1kOutput": 0.005,
+      "isActive": true,
+      "createdAt": "2026-07-02T17:20:18.318Z",
+      "updatedAt": "2026-07-02T17:20:18.318Z"
+    },
+    {
+      "id": "model-gpt-4o",
+      "providerId": "prov-openai",
+      "name": "GPT-4o",
+      "apiName": "gpt-4o",
+      "contextWindow": 128000,
+      "costPer1kInput": 0.005,
+      "costPer1kOutput": 0.015,
+      "isActive": true,
+      "createdAt": "2026-07-02T17:20:18.318Z",
+      "updatedAt": "2026-07-02T17:20:18.318Z"
+    },
+    {
+      "id": "model-gpt-4o-mini",
+      "providerId": "prov-openai",
+      "name": "GPT-4o Mini",
+      "apiName": "gpt-4o-mini",
+      "contextWindow": 128000,
+      "costPer1kInput": 0.00015,
+      "costPer1kOutput": 0.0006,
+      "isActive": true,
+      "createdAt": "2026-07-02T17:20:18.318Z",
+      "updatedAt": "2026-07-02T17:20:18.318Z"
+    },
+    {
+      "id": "model-claude-sonnet",
+      "providerId": "prov-anthropic",
+      "name": "Claude 3.5 Sonnet",
+      "apiName": "claude-3-5-sonnet",
+      "contextWindow": 200000,
+      "costPer1kInput": 0.003,
+      "costPer1kOutput": 0.015,
+      "isActive": true,
+      "createdAt": "2026-07-02T17:20:18.318Z",
+      "updatedAt": "2026-07-02T17:20:18.318Z"
+    },
+    {
+      "id": "model-claude-haiku",
+      "providerId": "prov-anthropic",
+      "name": "Claude 3.5 Haiku",
+      "apiName": "claude-3-5-haiku",
+      "contextWindow": 200000,
+      "costPer1kInput": 0.0008,
+      "costPer1kOutput": 0.004,
+      "isActive": true,
+      "createdAt": "2026-07-02T17:20:18.318Z",
+      "updatedAt": "2026-07-02T17:20:18.318Z"
+    },
+    {
+      "id": "model-deepseek-chat",
+      "providerId": "prov-deepseek",
+      "name": "DeepSeek V3",
+      "apiName": "deepseek-chat",
+      "contextWindow": 64000,
+      "costPer1kInput": 0.00014,
+      "costPer1kOutput": 0.00028,
+      "isActive": true,
+      "createdAt": "2026-07-02T17:20:18.318Z",
+      "updatedAt": "2026-07-02T17:20:18.318Z"
+    },
+    {
+      "id": "model-deepseek-coder",
+      "providerId": "prov-deepseek",
+      "name": "DeepSeek Coder V2",
+      "apiName": "deepseek-coder",
+      "contextWindow": 128000,
+      "costPer1kInput": 0.00014,
+      "costPer1kOutput": 0.00028,
+      "isActive": true,
+      "createdAt": "2026-07-02T17:20:18.318Z",
+      "updatedAt": "2026-07-02T17:20:18.318Z"
+    },
+    {
+      "id": "model-groq-llama",
+      "providerId": "prov-groq",
+      "name": "Groq Llama 3.1 70B",
+      "apiName": "llama-3.1-70b-versatile",
+      "contextWindow": 128000,
+      "costPer1kInput": 0.00059,
+      "costPer1kOutput": 0.00079,
+      "isActive": true,
+      "createdAt": "2026-07-02T17:20:18.318Z",
+      "updatedAt": "2026-07-02T17:20:18.318Z"
+    },
+    {
+      "id": "model-mistral-large",
+      "providerId": "prov-mistral",
+      "name": "Mistral Large",
+      "apiName": "mistral-large-latest",
+      "contextWindow": 128000,
+      "costPer1kInput": 0.0025,
+      "costPer1kOutput": 0.0075,
+      "isActive": true,
+      "createdAt": "2026-07-02T17:20:18.318Z",
+      "updatedAt": "2026-07-02T17:20:18.318Z"
+    },
+    {
+      "id": "model-xai-grok",
+      "providerId": "prov-xai",
+      "name": "Grok Beta",
+      "apiName": "grok-beta",
+      "contextWindow": 131072,
+      "costPer1kInput": 0.005,
+      "costPer1kOutput": 0.015,
+      "isActive": true,
+      "createdAt": "2026-07-02T17:20:18.318Z",
+      "updatedAt": "2026-07-02T17:20:18.318Z"
+    },
+    {
+      "id": "model-perplexity-sonar",
+      "providerId": "prov-perplexity",
+      "name": "Sonar Reasoning",
+      "apiName": "sonar-reasoning",
+      "contextWindow": 128000,
+      "costPer1kInput": 0.001,
+      "costPer1kOutput": 0.001,
+      "isActive": true,
+      "createdAt": "2026-07-02T17:20:18.318Z",
+      "updatedAt": "2026-07-02T17:20:18.318Z"
+    },
+    {
+      "id": "model-together-llama3",
+      "providerId": "prov-together",
+      "name": "Together Llama-3 8B",
+      "apiName": "together/llama3-8b",
+      "contextWindow": 8192,
+      "costPer1kInput": 0.0001,
+      "costPer1kOutput": 0.0001,
+      "isActive": true,
+      "createdAt": "2026-07-02T17:20:18.318Z",
+      "updatedAt": "2026-07-02T17:20:18.318Z"
+    },
+    {
+      "id": "model-ollama-llama3",
+      "providerId": "prov-ollama",
+      "name": "Ollama Llama-3 Local",
+      "apiName": "ollama/llama3",
+      "contextWindow": 8192,
+      "costPer1kInput": 0,
+      "costPer1kOutput": 0,
+      "isActive": true,
+      "createdAt": "2026-07-02T17:20:18.318Z",
+      "updatedAt": "2026-07-02T17:20:18.318Z"
+    },
+    {
+      "id": "model-lmstudio-local",
+      "providerId": "prov-lmstudio",
+      "name": "LM Studio Local LLM",
+      "apiName": "lm-studio/local",
+      "contextWindow": 4096,
+      "costPer1kInput": 0,
+      "costPer1kOutput": 0,
+      "isActive": true,
+      "createdAt": "2026-07-02T17:20:18.318Z",
+      "updatedAt": "2026-07-02T17:20:18.318Z"
+    },
+    {
+      "id": "model-custom-openai",
+      "providerId": "prov-openai-compatible",
+      "name": "Custom OpenAI Model",
+      "apiName": "custom-openai",
+      "contextWindow": 8192,
+      "costPer1kInput": 0.0005,
+      "costPer1kOutput": 0.0005,
+      "isActive": true,
+      "createdAt": "2026-07-02T17:20:18.318Z",
+      "updatedAt": "2026-07-02T17:20:18.318Z"
+    }
+  ],
+  "apiKeys": [
+    {
+      "id": "key-1",
+      "name": "Moataz Core Prod Key",
+      "keyPrefix": "mz_live_",
+      "redactedKey": "mz_live_********************f8a9",
+      "userId": "usr-admin",
+      "isActive": true,
+      "createdAt": "2026-07-02T17:20:18.318Z"
+    }
+  ],
+  "usageLogs": [
+    {
+      "id": "log-1",
+      "userId": "usr-admin",
+      "conversationId": "conv-1",
+      "modelId": "model-gemini-flash",
+      "inputTokens": 12000,
+      "outputTokens": 25000,
+      "cost": 0.0084,
+      "durationMs": 1450,
+      "createdAt": "2026-06-26T17:20:18.318Z"
+    },
+    {
+      "id": "log-2",
+      "userId": "usr-admin",
+      "conversationId": "conv-1",
+      "modelId": "model-gemini-pro",
+      "inputTokens": 8000,
+      "outputTokens": 14000,
+      "cost": 0.08,
+      "durationMs": 2300,
+      "createdAt": "2026-06-27T17:20:18.318Z"
+    },
+    {
+      "id": "log-3",
+      "userId": "usr-admin",
+      "conversationId": "conv-1",
+      "modelId": "model-gpt-4o",
+      "inputTokens": 4500,
+      "outputTokens": 9000,
+      "cost": 0.1575,
+      "durationMs": 1900,
+      "createdAt": "2026-06-28T17:20:18.318Z"
+    },
+    {
+      "id": "log-4",
+      "userId": "usr-admin",
+      "conversationId": "conv-1",
+      "modelId": "model-claude-sonnet",
+      "inputTokens": 15000,
+      "outputTokens": 30000,
+      "cost": 0.495,
+      "durationMs": 2800,
+      "createdAt": "2026-06-29T17:20:18.318Z"
+    },
+    {
+      "id": "log-5",
+      "userId": "usr-admin",
+      "conversationId": "conv-1",
+      "modelId": "model-gemini-flash",
+      "inputTokens": 54000,
+      "outputTokens": 110000,
+      "cost": 0.03705,
+      "durationMs": 1200,
+      "createdAt": "2026-06-30T17:20:18.318Z"
+    },
+    {
+      "id": "log-6",
+      "userId": "usr-admin",
+      "conversationId": "conv-1",
+      "modelId": "model-gemini-pro",
+      "inputTokens": 18000,
+      "outputTokens": 34000,
+      "cost": 0.1925,
+      "durationMs": 2100,
+      "createdAt": "2026-07-01T17:20:18.318Z"
+    },
+    {
+      "id": "log-7",
+      "userId": "usr-admin",
+      "conversationId": "conv-1",
+      "modelId": "model-gemini-flash",
+      "inputTokens": 32000,
+      "outputTokens": 68000,
+      "cost": 0.0228,
+      "durationMs": 1100,
+      "createdAt": "2026-07-02T17:20:18.318Z"
+    }
+  ],
+  "files": [
+    {
+      "id": "file-1",
+      "name": "llm_routing_benchmarks.pdf",
+      "mimeType": "application/pdf",
+      "sizeBytes": 254890,
+      "url": "/uploads/llm_routing_benchmarks.pdf",
+      "userId": "usr-admin",
+      "projectId": "proj-admin-1",
+      "folderId": null,
+      "createdAt": "2026-06-28T17:20:18.318Z"
+    },
+    {
+      "id": "file-2",
+      "name": "moataz_finetuning_instructions.txt",
+      "mimeType": "text/plain",
+      "sizeBytes": 15480,
+      "url": "/uploads/moataz_finetuning_instructions.txt",
+      "userId": "usr-admin",
+      "projectId": "proj-admin-1",
+      "folderId": null,
+      "createdAt": "2026-07-01T17:20:18.318Z"
+    }
+  ],
+  "folders": [],
+  "notifications": [
+    {
+      "id": "notif-1",
+      "userId": "usr-admin",
+      "title": "API Gateway Provisioned",
+      "content": "Your high-speed Moataz AI multi-model routing engine is fully operational.",
+      "isRead": false,
+      "createdAt": "2026-06-29T17:20:18.318Z"
+    },
+    {
+      "id": "notif-2",
+      "userId": "usr-admin",
+      "title": "Monthly Usage Check",
+      "content": "You optimized 74% of API costs by utilizing the Gemini 3.5 Flash automated router.",
+      "isRead": false,
+      "createdAt": "2026-07-02T17:20:18.318Z"
+    }
+  ],
+  "auditLogs": [
+    {
+      "id": "audit-1",
+      "userId": "usr-admin",
+      "action": "USER_LOGIN",
+      "ipAddress": "127.0.0.1",
+      "userAgent": "Mozilla Firefox",
+      "details": "Admin account login completed successfully.",
+      "createdAt": "2026-06-30T17:20:18.318Z"
+    },
+    {
+      "id": "audit-2",
+      "userId": "usr-admin",
+      "action": "API_KEY_CREATE",
+      "ipAddress": "127.0.0.1",
+      "userAgent": "Mozilla Firefox",
+      "details": "Created API Key: Moataz Core Prod Key",
+      "createdAt": "2026-07-01T17:20:18.318Z"
+    },
+    {
+      "id": "audit-36bh59v",
+      "userId": "usr-admin",
+      "action": "USER_LOGIN",
+      "ipAddress": "127.0.0.1",
+      "userAgent": "curl/8.17.0",
+      "details": "User authenticated successfully.",
+      "createdAt": "2026-07-02T17:21:52.226Z"
+    },
+    {
+      "id": "audit-h5d2aui",
+      "userId": "usr-admin",
+      "action": "USER_LOGIN",
+      "ipAddress": "127.0.0.1",
+      "userAgent": "curl/8.17.0",
+      "details": "User authenticated successfully.",
+      "createdAt": "2026-07-02T17:23:11.682Z"
+    },
+    {
+      "id": "audit-edkzlgm",
+      "userId": "usr-admin",
+      "action": "USER_LOGIN",
+      "ipAddress": "127.0.0.1",
+      "userAgent": "curl/8.17.0",
+      "details": "User authenticated successfully.",
+      "createdAt": "2026-07-02T18:30:52.175Z"
+    },
+    {
+      "id": "audit-uudmiwc",
+      "userId": "usr-admin",
+      "action": "USER_LOGIN",
+      "ipAddress": "127.0.0.1",
+      "userAgent": "curl/8.17.0",
+      "details": "User authenticated successfully.",
+      "createdAt": "2026-07-02T18:32:00.959Z"
+    },
+    {
+      "id": "audit-fowea1x",
+      "userId": "usr-admin",
+      "action": "USER_LOGIN",
+      "ipAddress": "127.0.0.1",
+      "userAgent": "curl/8.17.0",
+      "details": "User authenticated successfully.",
+      "createdAt": "2026-07-02T18:32:16.953Z"
+    },
+    {
+      "id": "audit-qsh38yc",
+      "userId": "usr-admin",
+      "action": "USER_LOGIN",
+      "ipAddress": "127.0.0.1",
+      "userAgent": "curl/8.17.0",
+      "details": "User authenticated successfully.",
+      "createdAt": "2026-07-02T18:32:34.696Z"
+    },
+    {
+      "id": "audit-qi290tv",
+      "userId": "usr-admin",
+      "action": "USER_LOGIN",
+      "ipAddress": "127.0.0.1",
+      "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/150.0.0.0 Safari/537.36",
+      "details": "User authenticated successfully.",
+      "createdAt": "2026-07-02T18:33:28.129Z"
+    },
+    {
+      "id": "audit-1crxyrp",
+      "userId": "usr-admin",
+      "action": "USER_LOGIN",
+      "ipAddress": "127.0.0.1",
+      "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/150.0.0.0 Safari/537.36",
+      "details": "User authenticated successfully.",
+      "createdAt": "2026-07-02T18:36:10.127Z"
+    },
+    {
+      "id": "audit-9yzu0bj",
+      "userId": "usr-admin",
+      "action": "USER_LOGIN",
+      "ipAddress": "127.0.0.1",
+      "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/150.0.0.0 Safari/537.36",
+      "details": "User authenticated successfully.",
+      "createdAt": "2026-07-02T18:37:08.589Z"
+    },
+    {
+      "id": "audit-c626tog",
+      "userId": "usr-admin",
+      "action": "USER_LOGIN",
+      "ipAddress": "127.0.0.1",
+      "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/150.0.0.0 Safari/537.36",
+      "details": "User authenticated successfully.",
+      "createdAt": "2026-07-02T18:39:20.278Z"
+    },
+    {
+      "id": "audit-ent1248",
+      "userId": "usr-admin",
+      "action": "USER_LOGIN",
+      "ipAddress": "127.0.0.1",
+      "userAgent": "curl/8.17.0",
+      "details": "User authenticated successfully.",
+      "createdAt": "2026-07-02T18:45:18.700Z"
+    }
+  ],
+  "promptTemplates": [
+    {
+      "id": "tmpl-1",
+      "name": "Security Vulnerability Code Auditor",
+      "content": "You are a professional security researcher. Audit the following code snippet for potential OWASP top 10 vulnerabilities. Outline findings with clear severity tags [CRITICAL], [HIGH], [MEDIUM], [INFO] and provide code remedies.",
+      "description": "Scans backend/frontend source code for standard injection, auth leaks, and exposure points.",
+      "category": "Security",
+      "userId": "usr-admin",
+      "isPublic": true,
+      "createdAt": "2026-07-02T17:20:18.318Z",
+      "updatedAt": "2026-07-02T17:20:18.318Z"
+    },
+    {
+      "id": "tmpl-2",
+      "name": "JSON Schema Data Builder",
+      "content": "Given the following unstructured text, transform it into a strictly compliant JSON schema. Output ONLY valid JSON inside a code block, representing the requested entities.",
+      "description": "Standardizes model outputs into structured JSON format schema.",
+      "category": "Productivity",
+      "userId": "usr-admin",
+      "isPublic": true,
+      "createdAt": "2026-07-02T17:20:18.318Z",
+      "updatedAt": "2026-07-02T17:20:18.318Z"
+    }
+  ],
+  "agents": [],
+  "workflows": [],
+  "workflowLogs": [],
+  "memories": [],
+  "mcpServers": [],
+  "automationRules": [],
+  "kbCollections": [
+    {
+      "id": "col-1",
+      "name": "Security Auditing Standards",
+      "description": "Official guidelines, compliance PDFs, and text references for model auditing.",
+      "userId": "usr-admin",
+      "projectId": "proj-admin-1",
+      "createdAt": "2026-06-29T17:20:18.318Z",
+      "updatedAt": "2026-07-02T17:20:18.318Z"
+    },
+    {
+      "id": "col-2",
+      "name": "System Engineering Manuals",
+      "description": "Technical references and prompt structure handbooks for AI agent design.",
+      "userId": "usr-admin",
+      "projectId": "proj-admin-1",
+      "createdAt": "2026-06-30T17:20:18.318Z",
+      "updatedAt": "2026-07-02T17:20:18.318Z"
+    }
+  ],
+  "kbDocuments": [
+    {
+      "id": "kbdoc-1",
+      "collectionId": "col-1",
+      "name": "owasp_top_10_cheatsheet.txt",
+      "sizeBytes": 42100,
+      "mimeType": "text/plain",
+      "status": "indexed",
+      "tags": [
+        "security",
+        "audit",
+        "owasp"
+      ],
+      "chunksCount": 12,
+      "createdAt": "2026-06-29T17:20:18.318Z",
+      "updatedAt": "2026-07-02T17:20:18.318Z"
+    },
+    {
+      "id": "kbdoc-2",
+      "collectionId": "col-1",
+      "name": "pci_dss_compliance_brief.txt",
+      "sizeBytes": 89000,
+      "mimeType": "text/plain",
+      "status": "indexed",
+      "tags": [
+        "compliance",
+        "payment",
+        "security"
+      ],
+      "chunksCount": 24,
+      "createdAt": "2026-06-30T17:20:18.318Z",
+      "updatedAt": "2026-07-02T17:20:18.318Z"
+    }
+  ],
+  "systemSettings": {
+    "global": {
+      "maintenanceMode": false,
+      "allowedEmailDomains": [
+        "moataz.ai",
+        "gmail.com"
+      ],
+      "defaultUserRole": "USER"
+    },
+    "organization": {
+      "name": "Moataz AI Systems Inc.",
+      "maxProjectsPerUser": 10,
+      "maxFilesPerProject": 50,
+      "maxStorageBytesPerProject": 104857600
+    },
+    "appearance": {
+      "brandColor": "blue",
+      "logoUrl": ""
+    },
+    "localization": {
+      "defaultLanguage": "en",
+      "defaultTimezone": "UTC"
+    },
+    "featureFlags": {
+      "enableStreaming": true,
+      "enablePromptLibrary": true,
+      "enableKnowledgeBase": true,
+      "enableBilling": true,
+      "enableRegistration": true
+    }
+  },
+  "backgroundJobs": [
+    {
+      "id": "job-1",
+      "name": "PCI DSS Compliance Ingestion",
+      "queue": "document-indexing",
+      "status": "completed",
+      "data": {
+        "documentId": "kbdoc-2"
+      },
+      "result": {
+        "status": "success",
+        "parsedChunks": 24
+      },
+      "attempts": 1,
+      "maxAttempts": 3,
+      "createdAt": "2026-06-30T17:20:18.318Z",
+      "updatedAt": "2026-06-30T17:20:30.318Z"
+    },
+    {
+      "id": "job-2",
+      "name": "Weekly Analytics Aggregation",
+      "queue": "metrics-cron",
+      "status": "completed",
+      "data": {
+        "userId": "usr-admin"
+      },
+      "result": {
+        "status": "success",
+        "processedRecords": 250
+      },
+      "attempts": 1,
+      "maxAttempts": 3,
+      "createdAt": "2026-07-01T17:20:18.318Z",
+      "updatedAt": "2026-07-01T17:20:23.318Z"
+    }
+  ]
+}
