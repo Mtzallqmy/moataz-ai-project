@@ -14,6 +14,16 @@ export default defineConfig(() => {
     build: {
       outDir: 'dist',
       emptyOutDir: true,
+      sourcemap: true,
+      minify: 'esbuild',
+      target: 'es2022',
+      rollupOptions: {
+        output: {
+          manualChunks: {
+            'vendor': ['react', 'react-dom'],
+          },
+        },
+      },
     },
     server: {
       proxy: {
@@ -22,6 +32,9 @@ export default defineConfig(() => {
           changeOrigin: true,
         },
       },
+    },
+    define: {
+      'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
     },
   };
 });
