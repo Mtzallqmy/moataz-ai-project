@@ -110,17 +110,22 @@ app.get('/api/health', async (req, res) => {
 //   app.use(Sentry.Handlers.errorHandler());
 // }
 
-// Serve Frontend in Production
-if (process.env.NODE_ENV === "production") {
-  app.use(express.static(path.join(__dirname, "dist")));
-  app.get("*", (req, res) => {
-    res.sendFile(path.join(__dirname, "dist", "index.html"));
+// On Vercel: static files are served by the CDN from the "dist" output directory,
+// and this app runs as a serverless function (no listen, no static serving).
+if (!process.env.VERCEL) {
+  // Serve Frontend in Production (self-hosted / local production)
+  if (process.env.NODE_ENV === "production") {
+    const staticDir = path.join(process.cwd(), "dist");
+    app.use(express.static(staticDir));
+    app.get("*", (req, res) => {
+      res.sendFile(path.join(staticDir, "index.html"));
+    });
+  }
+
+  const PORT = process.env.PORT || 3000;
+  app.listen(PORT, () => {
+    logger.info(`🚀 Server running on port ${PORT}`);
   });
 }
-
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  logger.info(`🚀 Server running on port ${PORT}`);
-});
 
 export default app;
