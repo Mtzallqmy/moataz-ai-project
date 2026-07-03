@@ -21,10 +21,10 @@ const logger = pino(pinoPretty());
 const prisma = new PrismaClient();
 const app = express();
 
-// Initialize Sentry for error tracking
+// Initialize Sentry for error tracking (optional)
 if (process.env.SENTRY_DSN) {
   Sentry.init({ dsn: process.env.SENTRY_DSN });
-  app.use(Sentry.Handlers.requestHandler());
+  // Note: Sentry.Handlers.requestHandler() requires newer Sentry version
 }
 
 // Run DB Health Check
@@ -105,10 +105,10 @@ app.get('/api/health', async (req, res) => {
   });
 });
 
-// Sentry Error Handler
-if (process.env.SENTRY_DSN) {
-  app.use(Sentry.Handlers.errorHandler());
-}
+// Sentry Error Handler (optional monitoring)
+// if (process.env.SENTRY_DSN) {
+//   app.use(Sentry.Handlers.errorHandler());
+// }
 
 // Serve Frontend in Production
 if (process.env.NODE_ENV === "production") {

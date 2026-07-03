@@ -119,6 +119,9 @@ export default function App() {
         user={user}
         activeTab={activeTab}
         setActiveTab={setActiveTab}
+        projects={projects}
+        activeProjectId={activeProjectId}
+        setActiveProjectId={setActiveProjectId}
         onLogout={handleLogout}
         darkMode={darkMode}
         setDarkMode={setDarkMode}

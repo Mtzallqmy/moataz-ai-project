@@ -1,6 +1,5 @@
 import { PrismaClient } from "@prisma/client";
 import { BaseProvider, RequestPayload, ResponseChunk, ProviderHealth, AIModel } from "./abstract.provider.js";
-import { GeminiProvider } from "./gemini.provider.js";
 import { GenericAIProvider } from "./generic.provider.js";
 
 const prisma = new PrismaClient();
@@ -9,10 +8,7 @@ export class ProviderRegistry {
   private providers: Map<string, BaseProvider> = new Map();
 
   constructor() {
-    // 1. Google Gemini (Dedicated)
-    this.register(new GeminiProvider());
-
-    // 2. OpenAI Compatible Providers
+    // OpenAI Compatible Providers
     this.register(new GenericAIProvider("prov-openai", "gpt-4o", "openai", "https://api.openai.com/v1", process.env.OPENAI_API_KEY!));
     this.register(new GenericAIProvider("prov-anthropic", "claude-3-5-sonnet-20240620", "anthropic", "https://api.anthropic.com/v1", process.env.ANTHROPIC_API_KEY!));
     this.register(new GenericAIProvider("prov-groq", "llama-3.1-70b-versatile", "openai", "https://api.groq.com/openai/v1", process.env.GROQ_API_KEY!));
@@ -29,9 +25,9 @@ export class ProviderRegistry {
     this.register(new GenericAIProvider("prov-perplexity", "llama-3.1-sonar-large-128k-online", "openai", "https://api.perplexity.ai", process.env.PERPLEXITY_API_KEY!));
     this.register(new GenericAIProvider("prov-fireworks", "accounts/fireworks/models/llama-v3p1-70b-instruct", "openai", "https://api.fireworks.ai/inference/v1", process.env.FIREWORKS_API_KEY!));
     
-    // 4. Local / Self-Hosted
-    if (process.env.OLLAMA_BASE_URL) {
-      this.register(new GenericAIProvider("prov-ollama", "llama3", "openai", process.env.OLLAMA_BASE_URL, "ollama"));
+    // Local / Self-Hosted
+    if (process.env.OLLAMA_API_URL) {
+      this.register(new GenericAIProvider("prov-ollama", "llama3", "openai", process.env.OLLAMA_API_URL, "ollama"));
     }
 
     // Sync providers to DB
@@ -42,9 +38,9 @@ export class ProviderRegistry {
     try {
       for (const provider of this.providers.values()) {
         await prisma.provider.upsert({
-          where: { name: provider.providerName },
-          update: { apiType: provider.apiType, isActive: true },
-          create: { name: provider.providerName, apiType: provider.apiType, isActive: true }
+          where: { name: provider.providerName as string },
+          update: { apiType: provider.apiType || "generic", isActive: true },
+          create: { name: provider.providerName as string, apiType: provider.apiType || "generic", isActive: true }
         });
       }
     } catch (error) {
@@ -53,7 +49,7 @@ export class ProviderRegistry {
   }
 
   public register(provider: BaseProvider) {
-    this.providers.set(provider.providerName, provider);
+    this.providers.set(provider.providerName as string, provider);
   }
 
   public getProvider(providerName: string): BaseProvider | null {
@@ -113,9 +109,15 @@ export class ProviderRegistry {
     return provider.generate({ ...request, model: modelName });
   }
 
-  public async streamGenerate(request: RequestPayload): AsyncIterable<ResponseChunk> {
-    const { provider, modelName } = await this.selectRoute(request);
-    return provider.streamGenerate({ ...request, model: modelName });
+  public streamGenerate(request: RequestPayload): AsyncIterable<ResponseChunk> {
+    return (async function* () {
+      try {
+        const { provider, modelName } = await (this as ProviderRegistry).selectRoute(request);
+        yield* provider.streamGenerate({ ...request, model: modelName });
+      } catch (error) {
+        throw error;
+      }
+    }).call(this);
   }
 
   public async getProvidersStatus(): Promise<Map<string, ProviderHealth>> {
@@ -123,14 +125,14 @@ export class ProviderRegistry {
     for (const provider of this.providers.values()) {
       try {
         const health = await provider.getHealth();
-        statusMap.set(provider.providerName, health);
+        statusMap.set(provider.providerName as string, health);
         
         await prisma.provider.update({
-          where: { name: provider.providerName },
+          where: { name: provider.providerName as string },
           data: { healthStatus: health.status }
         });
       } catch (error) {
-        statusMap.set(provider.providerName, { status: "unhealthy", message: String(error), lastChecked: new Date() });
+        statusMap.set(provider.providerName as string, { status: "unhealthy", message: String(error), lastChecked: new Date() });
       }
     }
     return statusMap;

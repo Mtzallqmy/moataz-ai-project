@@ -5,11 +5,11 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 export class GenericAIProvider extends BaseProvider {
-  protected providerName: string;
-  protected defaultModel: string;
+  providerName: string;
+  defaultModel: string;
   private baseUrl: string;
   private apiKey: string;
-  private apiType: "openai" | "anthropic";
+  apiType: "openai" | "anthropic";
 
   constructor(providerName: string, defaultModel: string, apiType: "openai" | "anthropic", baseUrl: string, apiKey: string) {
     super();
@@ -18,6 +18,7 @@ export class GenericAIProvider extends BaseProvider {
     this.apiType = apiType;
     this.baseUrl = baseUrl;
     this.apiKey = apiKey;
+    this.initializeCircuitBreaker();
   }
 
   public async generate(payload: RequestPayload): Promise<ResponseChunk> {
@@ -41,25 +42,27 @@ export class GenericAIProvider extends BaseProvider {
     }
   }
 
-  public async streamGenerate(payload: RequestPayload): AsyncIterable<ResponseChunk> {
-    if (this.isCircuitOpen()) {
-      throw new Error(`Provider ${this.providerName} is temporarily unavailable (circuit breaker open). Try again shortly.`);
-    }
-
-    try {
-      let stream: AsyncIterable<ResponseChunk>;
-      if (this.apiType === "anthropic") {
-        stream = this.streamAnthropicAPI(payload);
-      } else {
-        stream = this.streamOpenAICompatibleAPI(payload);
+  public streamGenerate(payload: RequestPayload): AsyncIterable<ResponseChunk> {
+    return (async function* () {
+      if (this.isCircuitOpen()) {
+        throw new Error(`Provider ${this.providerName} is temporarily unavailable (circuit breaker open). Try again shortly.`);
       }
-      this.recordSuccess();
-      return stream;
-    } catch (e: any) {
-      this.recordFailure();
-      console.error(`[AI Gateway] Stream Error in provider ${this.providerName}: ${e.message}`);
-      throw new Error(`${this.providerName} streaming failed: ${e.message}`);
-    }
+
+      try {
+        let stream: AsyncIterable<ResponseChunk>;
+        if (this.apiType === "anthropic") {
+          stream = this.streamAnthropicAPI(payload);
+        } else {
+          stream = this.streamOpenAICompatibleAPI(payload);
+        }
+        this.recordSuccess();
+        yield* stream;
+      } catch (e: any) {
+        this.recordFailure();
+        console.error(`[AI Gateway] Stream Error in provider ${this.providerName}: ${e.message}`);
+        throw new Error(`${this.providerName} streaming failed: ${e.message}`);
+      }
+    }).call(this);
   }
 
   public async getHealth(): Promise<ProviderHealth> {

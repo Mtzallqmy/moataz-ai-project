@@ -4,7 +4,15 @@ import * as bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
 const prisma = new PrismaClient();
-const JWT_SECRET = process.env.JWT_SECRET || "moataz-secret-key-2026";
+
+// JWT_SECRET is required - do not provide a fallback in production
+const JWT_SECRET = process.env.JWT_SECRET;
+if (!JWT_SECRET) {
+  console.error("❌ FATAL: JWT_SECRET environment variable is not set. Authentication will fail.");
+  if (process.env.NODE_ENV === "production") {
+    throw new Error("JWT_SECRET is required in production");
+  }
+}
 
 export interface AuthenticatedRequest extends Request {
   user?: any;
@@ -45,7 +53,7 @@ export async function registerController(req: Request, res: Response) {
       }
     });
 
-    const token = jwt.sign({ id: newUser.id, email: newUser.email, role: newUser.role }, JWT_SECRET, { expiresIn: "7d" });
+    const token = jwt.sign({ id: newUser.id, email: newUser.email, role: newUser.role }, JWT_SECRET!, { expiresIn: "7d" });
 
     return res.status(201).json({
       token,
@@ -78,7 +86,7 @@ export async function loginController(req: Request, res: Response) {
       return res.status(401).json({ error: "Invalid email or password." });
     }
 
-    const token = jwt.sign({ id: user.id, email: user.email, role: user.role }, JWT_SECRET, { expiresIn: "7d" });
+    const token = jwt.sign({ id: user.id, email: user.email, role: user.role }, JWT_SECRET!, { expiresIn: "7d" });
 
     return res.status(200).json({
       token,
@@ -118,7 +126,7 @@ export async function requireAuth(req: AuthenticatedRequest, res: Response, next
   }
 
   try {
-    const decoded = jwt.verify(token, JWT_SECRET);
+    const decoded = jwt.verify(token, JWT_SECRET!);
     req.user = decoded;
     next();
   } catch (error) {

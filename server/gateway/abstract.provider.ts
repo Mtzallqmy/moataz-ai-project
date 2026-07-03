@@ -32,6 +32,8 @@ export interface RequestPayload {
   generationConfig?: GenerationConfig;
   safetySettings?: SafetySetting[];
   stream?: boolean;
+  tools?: any[];
+  responseFormat?: { type: string };
 }
 
 export interface ResponseChunk {
@@ -47,8 +49,9 @@ export interface ProviderHealth {
 }
 
 export abstract class BaseProvider {
-  protected abstract providerName: string;
-  protected abstract defaultModel: string;
+  abstract providerName: string;
+  abstract defaultModel: string;
+  apiType?: string;
 
   // Circuit Breaker State
   private static circuitState: Map<string, { isOpen: boolean; lastFailure: number; failureCount: number }> = new Map();
@@ -56,6 +59,10 @@ export abstract class BaseProvider {
   private static readonly RESET_TIMEOUT = 60 * 1000; // 1 minute
 
   constructor() {
+    // Initialize circuit state after subclass properties are set
+  }
+  
+  protected initializeCircuitBreaker() {
     if (!BaseProvider.circuitState.has(this.providerName)) {
       BaseProvider.circuitState.set(this.providerName, { isOpen: false, lastFailure: 0, failureCount: 0 });
     }
