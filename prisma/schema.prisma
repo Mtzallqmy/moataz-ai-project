@@ -4,14 +4,22 @@ generator client {
 
 datasource db {
   provider  = "postgresql"
-  url       = env("DATABASE_URL")
-  directUrl = env("DATABASE_URL_RAW")
+  url       = env("POSTGRES_PRISMA_URL")
+  directUrl = env("POSTGRES_URL_NON_POOLING")
 }
 
 enum Role {
+  SUPER_ADMIN
   ADMIN
   MANAGER
   USER
+}
+
+enum JobStatus {
+  queued
+  active
+  completed
+  failed
 }
 
 enum Plan {
@@ -522,6 +530,43 @@ model WorkflowRun {
   workflow Workflow @relation(fields: [workflowId], references: [id], onDelete: Cascade)
 
   @@index([workflowId])
+}
+
+model SystemSetting {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  value     Json
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model JobRecord {
+  id          String    @id @default(cuid())
+  name        String
+  queue       String
+  status      JobStatus @default(queued)
+  data        Json?
+  result      Json?
+  error       String?
+  triggeredBy String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  completedAt DateTime?
+
+  @@index([queue])
+  @@index([status])
+}
+
+model McpServer {
+  id          String   @id @default(cuid())
+  name        String
+  url         String
+  description String?
+  isActive    Boolean  @default(true)
+  status      String   @default("disconnected")
+  metadata    Json?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
 model AutomationTriggerLog {
